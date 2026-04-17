@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Antigravity Inventory</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">Antigravity Inventory</div>
+            <a th:href="@{/products/new}" class="btn btn-primary">+ Add New Product</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Stats Summary -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Products</div>
+                <div class="stat-value" th:text="${totalProducts}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Inventory Value</div>
+                <div class="stat-value" th:text="${#numbers.formatCurrency(totalValue)}">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Low Stock Alerts</div>
+                <div class="stat-value" style="color: var(--warning-color);" th:text="${lowStock.size()}">0</div>
+            </div>
+        </section>
+
+        <!-- Product Table -->
+        <section class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${products}">
+                        <td th:text="${product.sku}">SKU-001</td>
+                        <td th:text="${product.name}">Product Name</td>
+                        <td th:text="${product.category}">Category</td>
+                        <td>
+                            <span th:text="${product.quantity}">0</span>
+                            <span th:if="${product.quantity < 10}" class="badge badge-low">Low</span>
+                        </td>
+                        <td th:text="${#numbers.formatCurrency(product.price)}">$0.00</td>
+                        <td>
+                            <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn" style="color: var(--accent-color);">Edit</a>
+                            <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn btn-danger" onclick="return confirm('Delete this product?')">Delete</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${products.empty}">
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            No products found. Start by adding one!
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>
